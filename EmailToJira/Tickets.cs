@@ -32,8 +32,7 @@ namespace EmailToJira
 
             await issue.SaveChangesAsync();
 
-            Console.WriteLine(DateTime.Now+ "\tTicket has been created.");
-            log.WriteLine(DateTime.Now + "\tTicket has been created.");
+            ToLog(log, "Ticket has been created.");
 
             jira.Issues.MaxIssuesPerRequest = 1;
             var issueKey = from i in jira.Issues.Queryable
@@ -53,19 +52,15 @@ namespace EmailToJira
             var issue = await jira.Issues.GetIssueAsync(key);
             await issue.AssignAsync(login);
             await issue.SaveChangesAsync();
-            Console.WriteLine(DateTime.Now + "\tTicket has been assigned.");
-            log.WriteLine(DateTime.Now + "\tTicket has been assigned.");
+            ToLog(log, "Ticket has been assigned.");
             await issue.WorkflowTransitionAsync("Start Investigate");
-            Console.WriteLine(DateTime.Now + "\tInvestigation starts.");
-            log.WriteLine(DateTime.Now + "\tInvestigation starts.");
+            ToLog(log, "\tInvestigation starts.");
 
             await issue.WorkflowTransitionAsync("Resolve");
-            Console.WriteLine(DateTime.Now + "\tIssue Resolved.");
-            log.WriteLine(DateTime.Now + "\tIssue Resolved.");
+            ToLog(log, "\tIssue Resolved.");
 
             await issue.WorkflowTransitionAsync(WorkflowActions.Close);
-            Console.WriteLine(DateTime.Now + "\tIssue Closed.");
-            log.WriteLine(DateTime.Now + "\tIssue Closed.");
+            ToLog(log, "\tIssue Closed.");
         }
 
         public void IssuesList(Jira jira)
@@ -124,6 +119,11 @@ namespace EmailToJira
             Console.WriteLine("Summary: \t" + item.Summary);
             Console.WriteLine("Description:\n" + item.Description);
             Console.WriteLine("------------------------------------------------------------------------");
+        }
+        public static void ToLog(StreamWriter log, String text)
+        {
+            Console.WriteLine(DateTime.Now + "\t" + text);
+            log.WriteLine(DateTime.Now + "\t" + text);
         }
     }
 }

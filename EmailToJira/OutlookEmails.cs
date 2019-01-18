@@ -67,21 +67,19 @@ namespace EmailToJira
                                 {
                                     emailDetails.Body = RemoveFirstLines(emailDetails.Body, 10);
                                 }
-                                /*emailDetails.Body = emailDetails.Body.Replace("________________________________", "");
-                                emailDetails.Body = emailDetails.Body.Replace("Note Importante: Le contenu de ce courriel est uniquement réservé à la personne ou l'organisme à qui il est destiné. Si vous n'êtes pas le destinataire prévu, veuillez nous en informer au plus vite et détruire le présent courriel. Dans ce cas, il ne vous est pas permis de copier ce courriel, de le distribuer ou de l'utiliser de quelque manière que ce soit.", "");
-                                emailDetails.Body = emailDetails.Body.Replace("________________________________", "");
-                                emailDetails.Body = emailDetails.Body.Replace("Important Notice: The content of this e - mail is intended only and solely for the use of the named recipient or organization.If you are not the named recipient, please inform us immediately and delete the present e - mail.In this case, you are not allowed to copy, distribute or use this e - mail in any way.", "");
-                                */
+                                if (emailDetails.Body.Contains("Note Importante"))
+                                {
+                                    emailDetails.Body = emailDetails.Body.Replace("________________________________", "");
+                                    emailDetails.Body = emailDetails.Body.Replace("Note Importante: Le contenu de ce courriel est uniquement réservé à la personne ou l'organisme à qui il est destiné. Si vous n'êtes pas le destinataire prévu, veuillez nous en informer au plus vite et détruire le présent courriel. Dans ce cas, il ne vous est pas permis de copier ce courriel, de le distribuer ou de l'utiliser de quelque manière que ce soit.", "");
+                                    emailDetails.Body = emailDetails.Body.Replace("________________________________", "");
+                                    emailDetails.Body = emailDetails.Body.Replace("Important Notice: The content of this e - mail is intended only and solely for the use of the named recipient or organization.If you are not the named recipient, please inform us immediately and delete the present e - mail.In this case, you are not allowed to copy, distribute or use this e - mail in any way.", "");
+                                }
 
                                 //Regex regex = new Regex(@".+\@");
                                 MatchCollection labelOf = r.Matches(emailDetails.Subject);
                                 loginLabel = labelOf[0].Value;
                                 loginLabel = loginLabel.Replace("[Bastion] New approval request for ", "");
                                 loginLabel = loginLabel.Replace("@", "");
-
-                                Console.WriteLine("");
-                                //Console.WriteLine("Label do wstrzyknięcia: "+loginLabel);
-                                Console.WriteLine("");
 
                                 jiraConn.MakeATicket(log, jira, emailDetails.Subject, emailDetails.Body, loginLabel, login);
                                 listEmailDetails.Add(emailDetails);

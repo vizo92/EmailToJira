@@ -10,3 +10,15 @@ C:\Users\skwia\Downloads\TryJira_Project\TryJira\TryJira\EmailToJira\obj\Release
 C:\Users\skwia\Downloads\TryJira_Project\TryJira\TryJira\EmailToJira\obj\Release\EmailToJira.exe
 C:\Users\skwia\Downloads\TryJira_Project\TryJira\TryJira\EmailToJira\obj\Release\EmailToJira.pdb
 C:\Users\skwia\Downloads\TryJira_Project\TryJira\TryJira\EmailToJira\obj\Release\EmailToJira.csprojAssemblyReference.cache
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\EmailToJira.exe.config
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\EmailToJira.exe
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\EmailToJira.pdb
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\Atlassian.Jira.dll
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\Newtonsoft.Json.dll
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\RestSharp.dll
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\bin\Release\Newtonsoft.Json.xml
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\obj\Release\EmailToJira.csprojAssemblyReference.cache
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\obj\Release\EmailToJira.csproj.CoreCompileInputs.cache
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\obj\Release\EmailToJira.csproj.CopyComplete
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\obj\Release\EmailToJira.exe
+C:\Users\skwia\source\repos\vizo92\projects\EmailToJira\obj\Release\EmailToJira.pdb
