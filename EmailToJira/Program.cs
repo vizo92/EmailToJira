@@ -77,7 +77,7 @@ namespace EmailToJira
         public static void CheckEmails(StreamWriter log, Jira jira, Tickets jiraConn, String login, String logTime)
         {
             log = File.AppendText("logs/log_" + logTime + ".txt");
-            var mails = OutlookEmails.ReadMailItems(log, jira, jiraConn, login);
+            var mails = OutlookEmails.ReadMailItems(log, jira, jiraConn, login, logTime);
             ToLog(log, "Checking for new e-mails...");
             if (mails.Count > 0)
             {

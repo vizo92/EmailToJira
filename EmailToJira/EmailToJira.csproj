@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>iconfinder_mail-reply-all_118782.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Atlassian.Jira, Version=10.4.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -85,8 +85,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon.ico" />
-    <Content Include="iconfinder_mail-reply-all_118782.ico" />
+    <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

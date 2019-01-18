@@ -16,8 +16,9 @@ namespace EmailToJira
 
         public String key;
 
-        public async void MakeATicket(StreamWriter log, Jira jira, String summary, String description, String loginLabel, String login)
+        public async void MakeATicket(StreamWriter log, Jira jira, String summary, String description, String loginLabel, String login, String logTime)
         {
+            log = File.AppendText("logs/log_" + logTime + ".txt");
             var s = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffK"); //if not works small hh
             s = s.Substring(0, 26) + s.Substring(27, 2);
             var issue = jira.CreateIssue("SWLORO");
@@ -43,12 +44,14 @@ namespace EmailToJira
                 key = item.Key.ToString();
             }
 
-            UpdateIssue(log, jira, key, login);
+            log.Close();
+            UpdateIssue(log, jira, key, login, logTime);
 
         }
 
-        public async void UpdateIssue(StreamWriter log, Jira jira, String key, String login)
+        public async void UpdateIssue(StreamWriter log, Jira jira, String key, String login, String logTime)
         {
+            log = File.AppendText("logs/log_" + logTime + ".txt");
             var issue = await jira.Issues.GetIssueAsync(key);
             await issue.AssignAsync(login);
             await issue.SaveChangesAsync();
@@ -61,6 +64,7 @@ namespace EmailToJira
 
             await issue.WorkflowTransitionAsync(WorkflowActions.Close);
             ToLog(log, "\tIssue Closed.");
+            log.Close();
         }
 
         public void IssuesList(Jira jira)
