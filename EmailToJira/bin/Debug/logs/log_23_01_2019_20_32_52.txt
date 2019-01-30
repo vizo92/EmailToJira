@@ -1,0 +1,2 @@
+23.01.2019 20:32:52	User skwiatkowski has logged in.
+23.01.2019 20:32:53	Running script for auto issue making..

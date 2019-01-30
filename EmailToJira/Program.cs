@@ -64,10 +64,12 @@ namespace EmailToJira
             Tickets jiraConn = new Tickets();
             Jira jira = Jira.CreateRestClient(settings[1], login, password);
 
+            Data passedData = new Data(log, jira, jiraConn, login, logTime);
+
             Console.WriteLine("\n");
             log.Close();
-            Program.TopMenu(log, jiraConn, jira, login, logTime);
-
+            Program.TopMenu(passedData);
+            log = File.AppendText("logs/log_" + logTime + ".txt");
             Console.WriteLine("Program stopped.");
             log.WriteLine(DateTime.Now + "\tProgram stopped.");
             log.Close();
@@ -78,7 +80,6 @@ namespace EmailToJira
         {
             log = File.AppendText("logs/log_" + logTime + ".txt");
             var mails = OutlookEmails.ReadMailItems(log, jira, jiraConn, login, logTime);
-            ToLog(log, "Checking for new e-mails...");
             if (mails.Count > 0)
             {
                 if (mails.Count != 1)
@@ -92,10 +93,6 @@ namespace EmailToJira
                     log.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
                 }
             }
-            else
-            {
-                ToLog(log, "No new emails.");
-            }
             int j = 1;
             foreach (var mail in mails)
             {
@@ -103,22 +100,22 @@ namespace EmailToJira
                 log.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
                 j++;
             }
-            ToLog(log, "Next check in 5 minutes.");
             log.Close();
-            Thread.Sleep(300000);
+            Thread.Sleep(1000);
+            Console.WriteLine("Test");
             CheckEmails(log, jira, jiraConn, login, logTime);
         }
 
-        public static void TopMenu(StreamWriter log, Tickets jiraConn, Jira jira, String login, String logTime)
+        public static void TopMenu(Data passedData)
         {
             Console.Clear();
             Console.WriteLine("\t\tAutomatic Jira ticket creation from UNREAD Bastion e-mails\t"+ DateTime.Now);
-            Console.WriteLine("\t\t\tCreated by Sylwester Kwiatkowski, 2019\t\t\t" + login);
+            Console.WriteLine("\t\t\tCreated by Sylwester Kwiatkowski, 2019\t\t\t" + passedData.Login);
 
-            MainMenu(log, jiraConn, jira, login, logTime);
+            MainMenu(passedData);
         }
 
-        public static void MainMenu(StreamWriter log, Tickets jiraConn, Jira jira, String login, String logTime)
+        public static void MainMenu(Data passedData)
         {
             Console.WriteLine("\n\n\n\t1. Show issue");
             Console.WriteLine("\t2. View 10 latest Jira tickets");
@@ -141,35 +138,44 @@ namespace EmailToJira
                 string issueName = "SWLORO-";
                 issueName = issueName + Console.ReadLine();
 
-                jiraConn.ShowIssue(jira, issueName);
-                Return(log, jiraConn, jira, login, logTime);
+                passedData.jiraConn.ShowIssue(passedData.jira, issueName);
+                Return(passedData);
             }
             if (choose.Key == ConsoleKey.D2 || choose.Key == ConsoleKey.NumPad2)
             {
-                jiraConn.IssuesList(jira);
-                Return(log, jiraConn, jira, login, logTime);
+                passedData.jiraConn.IssuesList(passedData.jira);
+                Return(passedData);
             }
             if (choose.Key == ConsoleKey.D3 || choose.Key == ConsoleKey.NumPad3)
             {
-                jiraConn.Assigned(jira, login);
-                Return(log, jiraConn, jira, login, logTime);
+                passedData.jiraConn.Assigned(passedData.jira, passedData.Login);
+                Return(passedData);
             }
             if (choose.Key == ConsoleKey.D4 || choose.Key == ConsoleKey.NumPad4)
             {
                 Console.WriteLine("\n\n");
-                log = File.AppendText("logs/log_" + logTime + ".txt");
-                ToLog(log, "Running script for auto issue making..");
-                log.Close();
-                CheckEmails(log, jira, jiraConn, login, logTime);
-                Return(log, jiraConn, jira, login, logTime);
+                passedData.log = File.AppendText("logs/log_" + passedData.LogTime + ".txt");
+                ToLog(passedData.log, "Running script for auto issue making..");
+                passedData.log.Close();
+
+                while (true)
+                {
+                    //Task.Delay(new TimeSpan(0, 0, 15)).ContinueWith(o => { passedData.CheckEmails(); });
+                    if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                    passedData.CheckEmails();
+                }
+                Return(passedData);
             }
         }
 
-        public static void Return(StreamWriter log, Tickets jiraConn, Jira jira, String login, String logTime)
+        public static void Return(Data passedData)
         {
             Console.WriteLine("\n\tPress any key to return....");
             Console.ReadKey();
-            TopMenu(log, jiraConn, jira, login, logTime);
+            TopMenu(passedData);
         }
 
         public static void ToLog(StreamWriter log, String text)
@@ -177,5 +183,112 @@ namespace EmailToJira
             Console.WriteLine(DateTime.Now + "\t"+text);
             log.WriteLine(DateTime.Now + "\t" + text);
         }
+
+
+        //  Not used methods yet, looking for running checking emails in the background
+
+        private static Task<decimal> LongRunningOperation(int loop)
+        {
+            // Start a task and return it
+            return Task.Run(() =>
+            {
+                decimal result = 0;
+
+                // Loop for a defined number of iterations
+                for (int i = 0; i < loop; i++)
+                {
+                    // Do something that takes times like a Thread.Sleep in .NET Core 2.
+                    Thread.Sleep(10);
+                    result += i;
+                }
+
+                return result;
+            });
+        }
+
+        private static Task<decimal> LongRunningCancellableOperation(int loop, CancellationToken cancellationToken)
+        {
+            Task<decimal> task = null;
+
+            // Start a task and return it
+            task = Task.Run(() =>
+            {
+                decimal result = 0;
+
+                // Loop for a defined number of iterations
+                for (int i = 0; i < loop; i++)
+                {
+                    // Check if a cancellation is requested, if yes,
+                    // throw a TaskCanceledException.
+
+                    if (cancellationToken.IsCancellationRequested)
+                        throw new TaskCanceledException(task);
+
+                    // Do something that takes times like a Thread.Sleep in .NET Core 2.
+                    Thread.Sleep(10);
+                    result += i;
+                }
+
+                return result;
+            });
+
+            return task;
+        }
+
+        private static async Task<decimal> LongRunningOperationWithCancellationTokenAsync(int loop, CancellationToken cancellationToken)
+        {
+            // We create a TaskCompletionSource of decimal
+            var taskCompletionSource = new TaskCompletionSource<decimal>();
+
+            // Registering a lambda into the cancellationToken
+            cancellationToken.Register(() =>
+            {
+                // We received a cancellation message, cancel the TaskCompletionSource.Task
+                taskCompletionSource.TrySetCanceled();
+            });
+
+            var task = LongRunningOperation(loop);
+
+            // Wait for the first task to finish among the two
+            var completedTask = await Task.WhenAny(task, taskCompletionSource.Task);
+
+            return await completedTask;
+        }
+
+        public static async Task CancelANonCancellableTaskAsync()
+        {
+            Console.WriteLine(nameof(CancelANonCancellableTaskAsync));
+
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                // Listening to key press to cancel
+                var keyBoardTask = Task.Run(() =>
+                {
+                    Console.WriteLine("Press enter to cancel");
+                    Console.ReadKey();
+
+                    // Sending the cancellation message
+                    cancellationTokenSource.Cancel();
+                });
+
+                try
+                {
+                    // Running the long running task
+                    var longRunningTask = LongRunningOperationWithCancellationTokenAsync(100, cancellationTokenSource.Token);
+                    var result = await longRunningTask;
+
+                    Console.WriteLine("Result {0}", result);
+                    Console.WriteLine("Press enter to continue");
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Task was cancelled");
+                }
+
+                await keyBoardTask;
+            }
+        }
     }
+
+
 }

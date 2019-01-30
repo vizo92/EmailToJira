@@ -1,0 +1,2 @@
+23.01.2019 21:28:59	User sykw1 has logged in.
+23.01.2019 21:29:00	Running script for auto issue making..
