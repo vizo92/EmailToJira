@@ -21,12 +21,12 @@ namespace EmailToJira
             //log = File.AppendText("logs/log_" + logTime + ".txt");
             var s = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffK"); //if not works small hh
             s = s.Substring(0, 26) + s.Substring(27, 2);
-            var issue = jira.CreateIssue("SWLORO");
+            var issue = jira.CreateIssue("PROJECT_NAME"); //Name of the Project
             issue.Type = "Incident";
             issue.Priority = "Low";
             issue.Summary = summary;
             issue.Description = description;
-            issue.Components.Add("-Access Wallix");
+            issue.Components.Add("COMPONENT_NAME"); //Component name
             issue.Labels.Add(loginLabel);
             issue["Origin"] = "None";
             issue["Occurence Time"] = s;
@@ -37,7 +37,7 @@ namespace EmailToJira
 
             jira.Issues.MaxIssuesPerRequest = 1;
             var issueKey = from i in jira.Issues.Queryable
-                         where i.Project == "SWLORO" && i.Status == "Open"
+                         where i.Project == "PROJECT_NAME" && i.Status == "Open"
                          select i;
             foreach (var item in issueKey)
             {
@@ -72,7 +72,7 @@ namespace EmailToJira
             jira.Issues.MaxIssuesPerRequest = 10;
             // use LINQ syntax to retrieve issues
             var issues = from i in jira.Issues.Queryable
-                         where i.Project == "SWLORO" && i.Status == "Open"
+                         where i.Project == "PROJECT_NAME" && i.Status == "Open"
                          //orderby i.DueDate
                          select i;
 
@@ -88,7 +88,7 @@ namespace EmailToJira
         {
 
             var issues = from i in jira.Issues.Queryable
-                     where i.Project == "SWLORO" && i.Key == issueName 
+                     where i.Project == "PROJECT_NAME" && i.Key == issueName 
                      select i;
 
             foreach (var issue in issues)
@@ -101,7 +101,7 @@ namespace EmailToJira
         {
             jira.Issues.MaxIssuesPerRequest = 10;
             var issues = from i in jira.Issues.Queryable
-                         where i.Project == "SWLORO" && i.Assignee.Equals(login)
+                         where i.Project == "PROJECT_NAME" && i.Assignee.Equals(login)
                          select i;
 
             foreach (var issue in issues)

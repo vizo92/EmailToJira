@@ -63,7 +63,7 @@ namespace EmailToJira
                                 emailDetails.Subject = item.Subject;
                                 emailDetails.Subject = emailDetails.Subject.Replace("FW: ", "");
                                 emailDetails.Body = item.Body;
-                                if (emailDetails.Body.Contains("[THIS MESSAGE ORIGINATED FROM A NON-IGT EMAIL ADDRESS]"))
+                                if (emailDetails.Body.Contains("[Some example text]"))
                                 {
                                     emailDetails.Body = RemoveFirstLines(emailDetails.Body, 10);
                                 }
