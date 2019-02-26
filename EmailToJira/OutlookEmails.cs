@@ -16,7 +16,7 @@ namespace EmailToJira
         public string Subject { get; set; }
         public string Body { get; set; }
 
-        public static List<OutlookEmails> ReadMailItems(StreamWriter log, Jira jira, Tickets jiraConn, String login, String logTime)
+        public static List<OutlookEmails> ReadMailItems(Jira jira, Tickets jiraConn, String login)
         {
             Application outlookApplication = null;
             NameSpace outlookNamespace = null;
@@ -80,8 +80,8 @@ namespace EmailToJira
                                 loginLabel = labelOf[0].Value;
                                 loginLabel = loginLabel.Replace("[Bastion] New approval request for ", "");
                                 loginLabel = loginLabel.Replace("@", "");
-                                log.Close();
-                                jiraConn.MakeATicket(log, jira, emailDetails.Subject, emailDetails.Body, loginLabel, login, logTime);
+                                //log.Close();
+                                jiraConn.MakeATicket(jira, emailDetails.Subject, emailDetails.Body, loginLabel, login);
                                 listEmailDetails.Add(emailDetails);
                                 
                                 item.UnRead = false;

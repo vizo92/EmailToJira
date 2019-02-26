@@ -45,7 +45,7 @@ namespace EmailToJira
 
 
             // Create a writer and open the file:
-            StreamWriter log;
+            /*treamWriter log;
             String logTime = DateTime.Now.ToString();
             logTime = logTime.Replace(" ", "_");
             logTime = logTime.Replace(":", "_");
@@ -57,53 +57,53 @@ namespace EmailToJira
             else
             {
                 log = File.AppendText("logs/log_" + logTime + ".txt");
-            }
+            }*/
 
-            log.WriteLine(DateTime.Now + "\tUser "+login+" has logged in.");
+            //log.WriteLine(DateTime.Now + "\tUser "+login+" has logged in.");
             string[] settings = File.ReadAllLines(@"urls.config");
             Tickets jiraConn = new Tickets();
             Jira jira = Jira.CreateRestClient(settings[1], login, password);
 
-            Data passedData = new Data(log, jira, jiraConn, login, logTime);
+            Data passedData = new Data(jira, jiraConn, login);
 
             Console.WriteLine("\n");
-            log.Close();
+            //log.Close();
             Program.TopMenu(passedData);
-            log = File.AppendText("logs/log_" + logTime + ".txt");
+            //log = File.AppendText("logs/log_" + logTime + ".txt");
             Console.WriteLine("Program stopped.");
-            log.WriteLine(DateTime.Now + "\tProgram stopped.");
-            log.Close();
+            //log.WriteLine(DateTime.Now + "\tProgram stopped.");
+            //log.Close();
             Console.ReadLine();
         }
 
-        public static void CheckEmails(StreamWriter log, Jira jira, Tickets jiraConn, String login, String logTime)
+        public static void CheckEmails(Jira jira, Tickets jiraConn, String login)
         {
-            log = File.AppendText("logs/log_" + logTime + ".txt");
-            var mails = OutlookEmails.ReadMailItems(log, jira, jiraConn, login, logTime);
+            //log = File.AppendText("logs/log_" + logTime + ".txt");
+            var mails = OutlookEmails.ReadMailItems(jira, jiraConn, login);
             if (mails.Count > 0)
             {
                 if (mails.Count != 1)
                 {
                     Console.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
-                    log.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
+                    //log.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
                 }
                 else
                 {
                     Console.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
-                    log.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
+                    //log.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
                 }
             }
             int j = 1;
             foreach (var mail in mails)
             {
                 Console.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
-                log.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
+                //log.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
                 j++;
             }
-            log.Close();
+            //log.Close();
             Thread.Sleep(1000);
             Console.WriteLine("Test");
-            CheckEmails(log, jira, jiraConn, login, logTime);
+            CheckEmails(jira, jiraConn, login);
         }
 
         public static void TopMenu(Data passedData)
@@ -154,9 +154,9 @@ namespace EmailToJira
             if (choose.Key == ConsoleKey.D4 || choose.Key == ConsoleKey.NumPad4)
             {
                 Console.WriteLine("\n\n");
-                passedData.log = File.AppendText("logs/log_" + passedData.LogTime + ".txt");
-                ToLog(passedData.log, "Running script for auto issue making..");
-                passedData.log.Close();
+                //passedData.log = File.AppendText("logs/log_" + passedData.LogTime + ".txt");
+                ToLog("Running script for auto issue making..");
+                //passedData.log.Close();
 
                 while (true)
                 {
@@ -178,10 +178,10 @@ namespace EmailToJira
             TopMenu(passedData);
         }
 
-        public static void ToLog(StreamWriter log, String text)
+        public static void ToLog(String text)
         {
             Console.WriteLine(DateTime.Now + "\t"+text);
-            log.WriteLine(DateTime.Now + "\t" + text);
+            //log.WriteLine(DateTime.Now + "\t" + text);
         }
 
 

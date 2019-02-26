@@ -16,9 +16,9 @@ namespace EmailToJira
 
         public String key;
 
-        public async void MakeATicket(StreamWriter log, Jira jira, String summary, String description, String loginLabel, String login, String logTime)
+        public async void MakeATicket(Jira jira, String summary, String description, String loginLabel, String login)
         {
-            log = File.AppendText("logs/log_" + logTime + ".txt");
+            //log = File.AppendText("logs/log_" + logTime + ".txt");
             var s = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffK"); //if not works small hh
             s = s.Substring(0, 26) + s.Substring(27, 2);
             var issue = jira.CreateIssue("SWLORO");
@@ -33,7 +33,7 @@ namespace EmailToJira
 
             await issue.SaveChangesAsync();
 
-            ToLog(log, "Ticket has been created.");
+            ToLog("Ticket has been created.");
 
             jira.Issues.MaxIssuesPerRequest = 1;
             var issueKey = from i in jira.Issues.Queryable
@@ -44,27 +44,27 @@ namespace EmailToJira
                 key = item.Key.ToString();
             }
 
-            log.Close();
-            UpdateIssue(log, jira, key, login, logTime);
+            //log.Close();
+            UpdateIssue(jira, key, login);
 
         }
 
-        public async void UpdateIssue(StreamWriter log, Jira jira, String key, String login, String logTime)
+        public async void UpdateIssue(Jira jira, String key, String login)
         {
-            log = File.AppendText("logs/log_" + logTime + ".txt");
+            //log = File.AppendText("logs/log_" + logTime + ".txt");
             var issue = await jira.Issues.GetIssueAsync(key);
             await issue.AssignAsync(login);
             await issue.SaveChangesAsync();
-            ToLog(log, "Ticket has been assigned.");
+            ToLog("Ticket has been assigned.");
             await issue.WorkflowTransitionAsync("Start Investigate");
-            ToLog(log, "\tInvestigation starts.");
+            ToLog("Investigation starts.");
 
             await issue.WorkflowTransitionAsync("Resolve");
-            ToLog(log, "\tIssue Resolved.");
+            ToLog("Issue Resolved.");
 
             await issue.WorkflowTransitionAsync(WorkflowActions.Close);
-            ToLog(log, "\tIssue Closed.");
-            log.Close();
+            ToLog("Issue Closed.");
+            //log.Close();
         }
 
         public void IssuesList(Jira jira)
@@ -124,10 +124,10 @@ namespace EmailToJira
             Console.WriteLine("Description:\n" + item.Description);
             Console.WriteLine("------------------------------------------------------------------------");
         }
-        public static void ToLog(StreamWriter log, String text)
+        public static void ToLog(String text)
         {
             Console.WriteLine(DateTime.Now + "\t" + text);
-            log.WriteLine(DateTime.Now + "\t" + text);
+            //log.WriteLine(DateTime.Now + "\t" + text);
         }
     }
 }

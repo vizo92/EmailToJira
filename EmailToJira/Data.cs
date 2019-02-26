@@ -22,41 +22,41 @@ namespace EmailToJira
 
         public Data() { }
 
-        public Data(StreamWriter log, Jira jira, Tickets jiraConn, String Login, String LogTime)
+        public Data(Jira jira, Tickets jiraConn, String Login)
         {
-            this.log = log;
+            //this.log = log;
             this.jira = jira;
             this.jiraConn = jiraConn;
             login = Login;
-            logTime = LogTime;
+            //logTime = LogTime;
         }
 
 
         public void CheckEmails()
         {
-            log = File.AppendText("logs/log_" + LogTime + ".txt");
-            var mails = OutlookEmails.ReadMailItems(log, jira, jiraConn, login, logTime);
+            //log = File.AppendText("logs/log_" + LogTime + ".txt");
+            var mails = OutlookEmails.ReadMailItems(jira, jiraConn, login);
             if (mails.Count > 0)
             {
                 if (mails.Count != 1)
                 {
                     Console.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
-                    log.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
+                    //log.WriteLine(DateTime.Now + "\t" + mails.Count + " new emails.");
                 }
                 else
                 {
                     Console.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
-                    log.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
+                    //log.WriteLine(DateTime.Now + "\t" + mails.Count + " new email.");
                 }
             }
             int j = 1;
             foreach (var mail in mails)
             {
                 Console.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
-                log.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
+                //log.WriteLine(DateTime.Now + "\tEmail subject: " + mail.Subject);
                 j++;
             }
-            log.Close();
+            //log.Close();
             Thread.Sleep(1000*30);
         }
     }
