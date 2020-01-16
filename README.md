@@ -13,4 +13,4 @@ Parametrization of data (to set in a file):
 - Project name
 - Own template for e-mail checks
 
-At the moment i have no time to upgrade this project.
+~~At the moment i have no time to upgrade this project.~~ I do not work there anymore. :-)
