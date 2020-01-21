@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/vizo92/EmailToJira.svg?branch=master)](https://travis-ci.com/vizo92/EmailToJira)
+
 # Email To Jira - Whats that?
 
 Email to Jira is a small program to automatize sort task in my job. All i needed was reading a specific e-mail from specific folder and creating a ticket in Jira where e-mail subject = summary and e-mail message = description of the issue. Lifecycle of ticket created by this program: <br />
